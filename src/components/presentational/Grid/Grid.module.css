@@ -1,0 +1,27 @@
+
+.grid {
+  height: 100%;
+  width: 100%;
+  /* text-align: center; */
+  /* display: flex; */
+}
+
+.row {
+  /* display: ; */
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  /* text-align: center; */
+}
+
+.column {
+  /* text-align: center; */
+  /* height: 1vh;
+  width: 1vw; */
+  background-color: #eee;
+}
+
+.column:hover {
+  background-color: black;
+  cursor: pointer;
+}
