@@ -30,17 +30,35 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
     };
     const arr = [];
     if (adjacentVals.top[1] >= 0) {
-      arr.push(adjacentVals.top);
+      // TODO: Need to push, something that reflects its a wall
+      if (adjacentVals.top[0] === 5 && adjacentVals.top[1] !== 3) {
+        // console.log('Trying to go up ' + x + ' y is ' + y);
+      } else {
+        arr.push(adjacentVals.top);
+      }
     }
     if (adjacentVals.right[0] <= size - 1) {
-      arr.push(adjacentVals.right);
+      if (adjacentVals.right[0] === 5 && adjacentVals.right[1] !== 3) {
+        // console.log('trying to go right ' + x + ' y is ' + y);
+      } else {
+        arr.push(adjacentVals.right);
+      }
     }
     if (adjacentVals.bottom[1] <= size - 1) {
-      arr.push(adjacentVals.bottom);
+      if (adjacentVals.bottom[0] === 5 && adjacentVals.bottom[1] !== 3) {
+        // console.log('trying to go down ' + x + ' y is ' + y);
+      } else {
+        arr.push(adjacentVals.bottom);
+      }
     }
     if (adjacentVals.left[0] >= 0) {
-      arr.push(adjacentVals.left);
+      if (adjacentVals.left[0] === 5 && adjacentVals.left[1] !== 3) {
+        // console.log('trying to go left ' + x + ' and y is ' + y);
+      } else {
+        arr.push(adjacentVals.left);
+      }
     }
+    console.log(`FINAL: x is ${x} and y is: ${y}`, arr);
     // console.log('arr is ', arr);
     return arr;
   }
