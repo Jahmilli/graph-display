@@ -26,6 +26,10 @@
   cursor: pointer;
 }
 
+.columnPath {
+  composes: column;
+  background-color: green;
+}
 .columnSelected {
   composes: column;
   background-color: red;

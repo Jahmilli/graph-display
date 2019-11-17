@@ -6,7 +6,7 @@ import styles from "./HomePage.module.css";
 const HomePage: React.FunctionComponent = () => {
   return (
     <div className={styles.homePageLockup}>
-      <Grid height={10} width={10}/>
+      <Grid size={10}/>
     </div>
   );
 }
