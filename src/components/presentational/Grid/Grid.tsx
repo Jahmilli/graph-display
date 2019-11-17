@@ -72,10 +72,10 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   
 
   // Returns the class based on what position we're viewing
-  let getClass = (arr: any) => {
+  let getClass = (arr: any, result: any = []) => {
     if (arr[0] === selectedPosition[0] && arr[1] === selectedPosition[1]) {
       return columnSelectedStyle;
-    } else if (gridPath[arr]) {
+    } else if (result[arr]) {
       console.log('gridpath was selected', arr, gridPath[arr], gridPath);
       return columnPathStyle;
     } else {
@@ -84,20 +84,24 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   }
 
   React.useEffect(() => {
+    let result = {};
+    if (selectedPosition.length > 0) {
+      result = breadthFirstTraversal([0,0]);
+      setGridPath(result);
+      console.log('result is ', result);
+    }
     const createMatrix = () => {
       let tmpGrid: any = [];
       for (let i = 0; i < size; i++) {
         tmpGrid.push([]);
         const row = [];
-        let tmpClass;
-        for (let j = 0; j < size; j++) {
-          
+        for (let j = 0; j < size; j++) {          
           row.push(
             <div
               key={`${i}-${j}`}
               onClick={() => handleSetSelectedPosition([i,j])} 
               // className={i === selectedPosition[0] && j === selectedPosition[1] ? columnSelectedStyle : columnStyle}
-              className={getClass([i, j])}
+              className={getClass([i, j], result)}
               style={{ height: `${100/size}vh`, width: `${100/size}vh`, margin: '0.1em'}}>
             </div>
           );
@@ -109,9 +113,6 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
 
     let matrix = createMatrix();
     setGrid(matrix);
-    let result = breadthFirstTraversal([0,0]);
-    setGridPath(result);
-    console.log('result is ', result);
   }, [size, selectedPosition]);
 
 
