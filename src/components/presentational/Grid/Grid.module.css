@@ -25,3 +25,8 @@
   background-color: black;
   cursor: pointer;
 }
+
+.columnSelected {
+  composes: column;
+  background-color: red;
+}
