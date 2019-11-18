@@ -26,7 +26,6 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
     "5,9": true,
   });
 
-  console.log('blocked is ', blocked);
   let testArr = [5,9];
   
   
@@ -92,7 +91,6 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   // Returns the class based on what position we're viewing
   let getClass = (arr: any, result: any = []) => {
     if (isBlocked(arr)) {
-      console.log('is blocked', arr);
       return columnBlockedStyle;
     } else if (arr[0] === selectedPosition[0] && arr[1] === selectedPosition[1]) {
       return columnSelectedStyle;
@@ -118,7 +116,7 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
           row.push(
             <div
               key={`${i}-${j}`}
-              onClick={() => handleSetSelectedPosition([i,j])} 
+              onClick={handleSetSelectedPosition([i,j])} 
               className={getClass([i, j], result)}
               style={{ height: `${100/size}vh`, width: `${100/size}vh`, margin: '0.1em'}}>
             </div>
@@ -134,7 +132,16 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   }, [size, selectedPosition, blocked]);
 
 
-  const handleSetSelectedPosition = (position: number[]) => {
+  const handleSetSelectedPosition = (position: any) => (event: any) => {
+    event.stopPropagation();
+    console.log('event is ', event, 'ctrl key', event.ctrlKey, ' meta key', event.metaKey);
+    if (event.metaKey) {
+      setBlocked({
+        ...blocked,
+        [position]: !blocked[position]
+      });
+      return;
+    }
     if (!isBlocked(position)) {
       setSelectedPosition(position);
     }
