@@ -14,9 +14,24 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   const [selectedDestination, setSelectedDestination] = React.useState<number[]>([]);
   const [gridPath, setGridPath] = React.useState<any>({});
   const [grid, setGrid] = React.useState([]);
+  const [blocked, setBlocked] = React.useState<any>({
+    "5,1": true,
+    "5,2": true,
+    "5,3": true,
+    "5,4": true,
+    "5,5": true,
+    "5,7": true,
+    "5,8": true,
+    "5,9": true,
+  });
+
+  console.log('blocked is ', blocked);
+  let testArr = [5,9];
+  
   
   // Styles
   const columnStyle = styles.column;
+  const columnBlockedStyle = styles.columnBlocked;
   const columnPathStyle = styles.columnPath;
   const columnSelectedStyle = styles.columnSelected;
 
@@ -58,7 +73,6 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
         arr.push(adjacentVals.left);
       }
     }
-    console.log(`FINAL: x is ${x} and y is: ${y}`, arr);
     // console.log('arr is ', arr);
     return arr;
   }
@@ -88,10 +102,16 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
     return pathMap;
   }
   
+  let isBlocked = (arr: any) => {
+    return blocked[arr];
+  }
 
   // Returns the class based on what position we're viewing
   let getClass = (arr: any, result: any = []) => {
-    if (arr[0] === selectedPosition[0] && arr[1] === selectedPosition[1]) {
+    if (isBlocked(arr)) {
+      console.log('is blocked', arr);
+      return columnBlockedStyle;
+    } else if (arr[0] === selectedPosition[0] && arr[1] === selectedPosition[1]) {
       return columnSelectedStyle;
     } else if (result[arr]) {
       console.log('gridpath was selected', arr, gridPath[arr], gridPath);
@@ -118,7 +138,6 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
             <div
               key={`${i}-${j}`}
               onClick={() => handleSetSelectedPosition([i,j])} 
-              // className={i === selectedPosition[0] && j === selectedPosition[1] ? columnSelectedStyle : columnStyle}
               className={getClass([i, j], result)}
               style={{ height: `${100/size}vh`, width: `${100/size}vh`, margin: '0.1em'}}>
             </div>
@@ -131,17 +150,17 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
 
     let matrix = createMatrix();
     setGrid(matrix);
-  }, [size, selectedPosition]);
+  }, [size, selectedPosition, blocked]);
 
 
   const handleSetSelectedPosition = (position: number[]) => {
     setSelectedPosition(position);
   };
+  
+  // console.log('testArr', isBlocked(testArr));
 
   return (
     <div className={styles.grid}>
-      {/* <h1>{selectedPosition}</h1> */}
-      {/* <h1>Hello World</h1> */}
       { grid }
     </div>
   );

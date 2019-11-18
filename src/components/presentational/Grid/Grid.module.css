@@ -26,6 +26,11 @@
   cursor: pointer;
 }
 
+.columnBlocked {
+  composes: column;
+  background-color: yellow;
+}
+
 .columnPath {
   composes: column;
   background-color: green;
