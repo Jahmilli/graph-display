@@ -48,8 +48,7 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   }
 
   const breadthFirstTraversal = (vertex: number[]) => {
-    const path = []; // Contains the path of vertices the depth_first search.
-    const pathMap: any = {};
+    const path: any = {};
     const visited: IVisited = {} // needs to be size of vertices and initialised to false
     const unprocessed: number[][] = []; // Queue that contains unprocesseed vertices which needs to be checked
   
@@ -59,16 +58,18 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
       if (u[0] === selectedPosition[0] && u[1] === selectedPosition[1]) {
         break;
       }
-      // console.log('u is ', u, 'selected is ', selectedPosition);
       if (!visited[u]) {
-        path.push(u);
-        pathMap[u] = true;
+        path[u] = true;
         visited[u] = true;
         unprocessed.push(...getAdjacent(u));
       }
     }
-    // return path;
-    return pathMap;
+    console.log('path is ', path);
+    return path;
+  }
+
+  const shortestDistance = (vertex: number[]) => {
+
   }
   
   let isBlocked = (arr: any) => {
