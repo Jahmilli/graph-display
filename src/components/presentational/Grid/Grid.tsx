@@ -14,21 +14,8 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   const [selectedDestination, setSelectedDestination] = React.useState<number[]>([]);
   const [gridPath, setGridPath] = React.useState<any>({});
   const [grid, setGrid] = React.useState([]);
-  const [blocked, setBlocked] = React.useState<any>({
-    "5,0": true,
-    "5,1": true,
-    "5,2": true,
-    "5,3": true,
-    "5,4": true,
-    "5,5": true,
-    "5,7": true,
-    "5,8": true,
-    "5,9": true,
-  });
+  const [blocked, setBlocked] = React.useState<any>({});
 
-  let testArr = [5,9];
-  
-  
   // Styles
   const columnStyle = styles.column;
   const columnBlockedStyle = styles.columnBlocked;

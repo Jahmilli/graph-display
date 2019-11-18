@@ -1,3 +1,11 @@
 .homePageLockup {
- 
+ display: grid;
+ grid-template-columns: 15% 85%;
+}
+
+.infoLockup {
+  /* padding: 2em; */
+  /* width:  */
+  padding: 2em;
+  /* background-color: red; */
 }
