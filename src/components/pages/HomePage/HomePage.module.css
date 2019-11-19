@@ -1,0 +1,30 @@
+.homePageLockup {
+ display: grid;
+ grid-template-columns: 15% 85%;
+}
+
+.infoLockup {
+  padding: 2em 0 0 2em;
+  background-color: #eee;
+  height: 100vh;
+}
+
+.searchOptions {
+  display: block;
+}
+
+.gridSize {
+  margin-top: 1em;
+}
+
+.gridSize input {
+  display: block;
+  background: none;
+  border: none;
+  border-bottom: 1px solid black;
+  font-size: 14px;
+}
+
+.gridSize p {
+  margin: 0;
+}

@@ -1,0 +1,41 @@
+
+.grid {
+  height: 100%;
+  width: 100%;
+}
+
+.row {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+
+.column {
+  background-color: #eee;
+  transition: all 0.2s ease-in;
+}
+
+.column:hover {
+  background-color: black;
+  cursor: pointer;
+}
+
+.columnBlocked {
+  composes: column;
+  background-color: yellow;
+}
+
+.columnPath {
+  composes: column;
+  background-color: green;
+}
+
+.start {
+  composes: column;
+  background-color: lightblue;
+}
+
+.destination {
+  composes: column;
+  background-color: red;
+}
