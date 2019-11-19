@@ -68,8 +68,42 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
     return path;
   }
 
+  /*
+  {
+    [0,0]: [[0,0]],
+    [0,1]: [[0,0], [0,1]]
+    [1,0]: [[0,0], [1,0]],
+  }
+  */
   const shortestDistance = (vertex: number[]) => {
-
+    const path: any = [];
+    const visited: any = {} // needs to be size of vertices and initialised to false
+    const unprocessed: any[] = []; // Queue that contains unprocesseed vertices which needs to be checked
+  
+    unprocessed.push({
+      key: vertex,
+      path: [vertex]
+    });
+    while (unprocessed.length !== 0) {
+      let u: any = unprocessed.shift();
+      if (u.key[0] === selectedPosition[0] && u.key[1] === selectedPosition[1]) {
+        // So not expecting this to work correctly, it will find first
+        // Question is, is first always shortest?? (may be)
+        console.log('found, u is ', u);
+        return u.path;
+      }
+      if (!visited[u.key]) {
+        visited[u.key] = true;
+        for (let vertex of getAdjacent(u.key)) {
+          unprocessed.push({
+            key: vertex,
+            path: [...u.path, vertex]
+          });
+        }
+      }
+    }
+    console.log('path is ', path);
+    return path;
   }
   
   let isBlocked = (arr: any) => {
@@ -90,10 +124,17 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   }
 
   React.useEffect(() => {
-    let result = {};
+    let result: any = {};
     if (selectedPosition.length > 0) {
-      result = breadthFirstTraversal([0,0]);
-      setGridPath(result);
+      // result = breadthFirstTraversal([0,0]);
+      result = shortestDistance([0,0]);
+      let newResult: any = {}
+      for(let i of result) {
+        newResult[i] = true
+      }
+      result = newResult;
+      // setGridPath(result);
+      setGridPath(newResult);
     }
     const createMatrix = () => {
       let tmpGrid: any = [];
