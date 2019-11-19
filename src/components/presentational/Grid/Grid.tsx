@@ -105,6 +105,7 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
         }
       }
     }
+
     return path;
   }
   
@@ -157,7 +158,7 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
             <div
               key={`${i}-${j}`}
               onClick={handleSetSelectedPosition([i,j])}
-              onMouseOver={handleDrag([i,j])}
+              onMouseOver={handleMouseOver([i,j])}
               className={getClass([i, j], result)}
               style={{ height: `${100/size}vh`, width: `${100/size}vh`, margin: '0.1em'}}>
             </div>
@@ -172,7 +173,7 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
     setGrid(matrix);
   }, [size, selectedStart, selectedDestination, blocked]);
 
-  const handleDrag = (position: any) => (event: any) => {
+  const handleMouseOver = (position: any) => (event: any) => {
     if (event.metaKey) {
       setBlocked({
         ...blocked,
@@ -182,7 +183,7 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
     }
   }
   
-  const handleSetSelectedPosition = (position: any) => (event: React.MouseEvent) => {
+  const handleSetSelectedPosition = (position: number[]) => (event: React.MouseEvent) => {
     if (!isBlocked(position)) {
       if (isCurrentPosition) {
         setSelectedStart(position);
