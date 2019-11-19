@@ -12,25 +12,36 @@ interface IVisited {
   [key: string]: boolean;
 }
 
+interface UnprocessedVertex {
+  key: number[];
+  path: number[][];
+}
+
+interface Blocked {
+  [key: string]: number[];
+}
+
 const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathLength }) => {
-  const [selectedPosition, setSelectedPosition] = React.useState<number[]>([]);
-  const [selectedDestination, setSelectedDestination] = React.useState<number[]>([]);
+  const [selectedStart, setSelectedStart] = React.useState<number[]>([0, 0]);
+  const [selectedDestination, setSelectedDestination] = React.useState<number[]>([0, 0]);
+  const [isCurrentPosition, setIsCurrentPosition] = React.useState(false);
   const [grid, setGrid] = React.useState([]);
-  const [blocked, setBlocked] = React.useState<any>({});
+  const [blocked, setBlocked] = React.useState<Blocked>({});
 
   // Styles
   const columnStyle = styles.column;
   const columnBlockedStyle = styles.columnBlocked;
   const columnPathStyle = styles.columnPath;
-  const columnSelectedStyle = styles.columnSelected;
+  const startStyle = styles.start;
+  const destinationStyle = styles.destination;
 
   const getAdjacent = (vertex: number[]) => {
     const x = vertex[0], y = vertex[1];
     const adjacentVals = {
-      top: [x, y-1],
-      right: [x+1, y],
-      bottom: [x, y+1],
-      left: [x-1, y]
+      top: [x, y - 1],
+      right: [x + 1, y],
+      bottom: [x, y + 1],
+      left: [x - 1, y]
     };
     const arr = [];
     if (!isBlocked(adjacentVals.top) && adjacentVals.top[1] >= 0) {
@@ -49,19 +60,19 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
   }
 
   const breadthFirstTraversal = (vertex: number[]) => {
-    const path: any = [];
+    const path: number[][] = [];
     const visited: IVisited = {} // needs to be size of vertices and initialised to false
     const unprocessed: number[][] = []; // Queue that contains unprocesseed vertices which needs to be checked
   
     unprocessed.push(vertex);
     while (unprocessed.length !== 0) {
-      let u: any = unprocessed.shift();
-      if (u[0] === selectedPosition[0] && u[1] === selectedPosition[1]) {
+      let u: number[] = unprocessed.shift() || [];
+      if (u[0] === selectedDestination[0] && u[1] === selectedDestination[1]) {
         break;
       }
-      if (!visited[u]) {
+      if (!visited[u.toString()]) {
         path.push(u);
-        visited[u] = true;
+        visited[u.toString()] = true;
         unprocessed.push(...getAdjacent(u));
       }
     }
@@ -69,24 +80,23 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
   }
 
   const shortestDistance = (vertex: number[]) => {
-    const path: any = [];
+    const path: number[] = [];
     const visited: any = {} // needs to be size of vertices and initialised to false
-    const unprocessed: any[] = []; // Queue that contains unprocesseed vertices which needs to be checked
+    const unprocessed: UnprocessedVertex[] = []; // Queue that contains unprocesseed vertices which needs to be checked
   
     unprocessed.push({
       key: vertex,
       path: [vertex]
     });
+
     while (unprocessed.length !== 0) {
-      let u: any = unprocessed.shift();
-      if (u.key[0] === selectedPosition[0] && u.key[1] === selectedPosition[1]) {
-        // So not expecting this to work correctly, it will find first
-        // Question is, is first always shortest?? (may be)
-        console.log('found, u is ', u);
+      // @ts-ignore
+      let u: UnprocessedVertex = unprocessed.shift();
+      if (u.key[0] === selectedDestination[0] && u.key[1] === selectedDestination[1]) {
         return u.path;
       }
-      if (!visited[u.key]) {
-        visited[u.key] = true;
+      if (!visited[u.key.toString()]) {
+        visited[u.key.toString()] = true;
         for (let vertex of getAdjacent(u.key)) {
           unprocessed.push({
             key: vertex,
@@ -103,12 +113,14 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
   }
 
   // Returns the class based on what position we're viewing
-  let getClass = (arr: any, result: any = []) => {
+  let getClass = (arr: number[], result: any = []) => {
     if (isBlocked(arr)) {
       return columnBlockedStyle;
-    } else if (arr[0] === selectedPosition[0] && arr[1] === selectedPosition[1]) {
-      return columnSelectedStyle;
-    } else if (result[arr]) {
+    } else if (arr[0] === selectedStart[0] && arr[1] === selectedStart[1]) {
+      return startStyle;
+    } else if (arr[0] === selectedDestination[0] && arr[1] === selectedDestination[1]) {
+      return destinationStyle;
+    } else if (result[arr.toString()]) {
       return columnPathStyle;
     } else {
       return columnStyle;
@@ -117,24 +129,24 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
 
   React.useEffect(() => {
     let result: any = {};
-    if (selectedPosition.length > 0) {
+    if (selectedStart.length > 0) {
+      let tmpPath: any[] = [];
       switch(searchOption) {
-        case SearchOptions.BREADTH_FIRST_SEARCH: result = breadthFirstTraversal([0, 0]);
+        case SearchOptions.BREADTH_FIRST_SEARCH: tmpPath = breadthFirstTraversal(selectedStart);
           break;
-        case SearchOptions.SHORTEST_PATH: result = shortestDistance([0, 0]);
+        case SearchOptions.SHORTEST_PATH: tmpPath = shortestDistance(selectedStart);
           break;
-        default: result = breadthFirstTraversal([0, 0])
+        default: tmpPath = breadthFirstTraversal(selectedStart)
       }
 
-      let newResult: any = {}
-      for(let i of result) {
-        newResult[i] = true
+      for(let i of tmpPath) {
+        result[i] = true
       }
-      console.log('path length is ', result.length);
-      getPathLength(result.length);
-      result = newResult;
-      // setGridPath(result);
+      
+      getPathLength(Object.keys(result).length);
     }
+
+
     const createMatrix = () => {
       let tmpGrid: any = [];
       for (let i = 0; i < size; i++) {
@@ -144,7 +156,8 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
           row.push(
             <div
               key={`${i}-${j}`}
-              onClick={handleSetSelectedPosition([i,j])} 
+              onClick={handleSetSelectedPosition([i,j])}
+              onMouseOver={handleDrag([i,j])}
               className={getClass([i, j], result)}
               style={{ height: `${100/size}vh`, width: `${100/size}vh`, margin: '0.1em'}}>
             </div>
@@ -157,11 +170,9 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
 
     let matrix = createMatrix();
     setGrid(matrix);
-  }, [size, selectedPosition, blocked]);
+  }, [size, selectedStart, selectedDestination, blocked]);
 
-
-  const handleSetSelectedPosition = (position: any) => (event: any) => {
-    event.stopPropagation();
+  const handleDrag = (position: any) => (event: any) => {
     if (event.metaKey) {
       setBlocked({
         ...blocked,
@@ -169,8 +180,17 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathL
       });
       return;
     }
+  }
+  
+  const handleSetSelectedPosition = (position: any) => (event: React.MouseEvent) => {
     if (!isBlocked(position)) {
-      setSelectedPosition(position);
+      if (isCurrentPosition) {
+        setSelectedStart(position);
+        setIsCurrentPosition(false);
+      } else {
+        setSelectedDestination(position);
+        setIsCurrentPosition(true);
+      }
     }
   };
 

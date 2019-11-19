@@ -17,8 +17,13 @@ const HomePage: React.FunctionComponent = () => {
     setPathLength(length);
   }
 
-  const handleInputChange = (event: any) => {
+  const handleInputChange = (event: React.ChangeEvent<any>) => {
     setSearchOption(event.target.value);
+  }
+  const handleSetSize = (event: React.ChangeEvent<any>) => {
+    if (event.target.value >= 0 && event.target.value <= 40) {
+      setSize(event.target.value);
+    }
   }
 
   React.useEffect(() => {
@@ -28,32 +33,52 @@ const HomePage: React.FunctionComponent = () => {
   return (
     <div className={styles.homePageLockup}>
       <div className={styles.infoLockup}>
-        
         <p>Search Option: <strong>{searchOption}</strong></p>
-        <input 
-          id="breathFirstSearch"
-          type="radio"
-          name="searchOption"
-          checked={searchOption === SearchOptions.BREADTH_FIRST_SEARCH}
-          value={SearchOptions.BREADTH_FIRST_SEARCH}
-          onClick={handleInputChange}
-          />
-        <label htmlFor="breathFirstSearch">{SearchOptions.BREADTH_FIRST_SEARCH}</label>
-        <input 
-          id="shortestPath"
-          type="radio"
-          name="searchOption"
-          checked={searchOption === SearchOptions.SHORTEST_PATH}
-          value={SearchOptions.SHORTEST_PATH}
-          onClick={handleInputChange} 
-          />
-        <label htmlFor="shortestPath">{SearchOptions.SHORTEST_PATH}</label>
-        <p>Grid Size: <strong>{size}</strong></p>
+        <div className={styles.searchOptions}>
+          <input 
+            id="breathFirstSearch"
+            type="radio"
+            name="searchOption"
+            checked={searchOption === SearchOptions.BREADTH_FIRST_SEARCH}
+            value={SearchOptions.BREADTH_FIRST_SEARCH}
+            onClick={handleInputChange}
+            />
+          <label htmlFor="breathFirstSearch">{SearchOptions.BREADTH_FIRST_SEARCH}</label>
+        </div>
+        <div className={styles.searchOptions}>
+          <input 
+            id="shortestPath"
+            type="radio"
+            name="searchOption"
+            checked={searchOption === SearchOptions.SHORTEST_PATH}
+            value={SearchOptions.SHORTEST_PATH}
+            onClick={handleInputChange} 
+            />
+          <label htmlFor="shortestPath">{SearchOptions.SHORTEST_PATH}</label>
+        </div>
+
+        <div className={styles.gridSize}>
+          <label htmlFor="gridSize">Grid Size</label>
+          <input 
+            id="gridSize"
+            type="number"
+            name="gridSize"
+            value={size}
+            onChange={handleSetSize} 
+            />
+            <p>
+              Min: 0
+              <br />
+              Max: 40
+            </p>
+        </div>
+
+        {/* <p>Grid Size: <strong>{size}</strong></p> */}
+
         <p>Path Length: <strong>{pathLength}</strong></p>
         <div>
-          <p>Tool Tip</p>
-          <p><strong>Click</strong> to set a marker, this will be the destination endpoint for the initial one to search for</p>
-          <p><strong>Control Click</strong> to create a 'blocking' block. Searches will not be able to navigate to a 'blocking' block</p>
+          <p><strong>Click</strong> to set a marker, this will be either be the starting position or destination position to search for</p>
+          <p><strong>Hold 'Control/Command'</strong> whilst moving your mouse to create a 'blocking' block. Searches will not be able to navigate to a 'blocking' block</p>
         </div>
       </div>    
       <Grid size={size} searchOption={searchOption} getPathLength={getPathLength} />

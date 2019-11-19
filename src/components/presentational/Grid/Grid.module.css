@@ -2,23 +2,17 @@
 .grid {
   height: 100%;
   width: 100%;
-  /* text-align: center; */
-  /* display: flex; */
 }
 
 .row {
-  /* display: ; */
   display: flex;
   flex-flow: row nowrap;
   justify-content: center;
-  /* text-align: center; */
 }
 
 .column {
-  /* text-align: center; */
-  /* height: 1vh;
-  width: 1vw; */
   background-color: #eee;
+  transition: all 0.2s ease-in;
 }
 
 .column:hover {
@@ -35,7 +29,13 @@
   composes: column;
   background-color: green;
 }
-.columnSelected {
+
+.start {
+  composes: column;
+  background-color: lightblue;
+}
+
+.destination {
   composes: column;
   background-color: red;
 }
