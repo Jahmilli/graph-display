@@ -2,21 +2,43 @@ import React from "react";
 import Grid from "../../presentational/Grid/Grid";
 import styles from "./HomePage.module.css";
 
-enum SearchOptions {
+export enum SearchOptions {
   BREADTH_FIRST_SEARCH = "Breath First Search",
   SHORTEST_PATH = "Shortest Path"
 };
+
 
 const HomePage: React.FunctionComponent = () => {
   const [searchOption, setSearchOption] = React.useState(SearchOptions.BREADTH_FIRST_SEARCH);
   const [size, setSize] = React.useState(10);
 
-
+  const handleInputChange = (event: any) => {
+    setSearchOption(event.target.value);
+  }
 
   return (
     <div className={styles.homePageLockup}>
       <div className={styles.infoLockup}>
+        
         <p>Search Option: <strong>{searchOption}</strong></p>
+        <input 
+          id="breathFirstSearch"
+          type="radio"
+          name="searchOption"
+          checked={searchOption === SearchOptions.BREADTH_FIRST_SEARCH}
+          value={SearchOptions.BREADTH_FIRST_SEARCH}
+          onClick={handleInputChange}
+          />
+        <label htmlFor="breathFirstSearch">{SearchOptions.BREADTH_FIRST_SEARCH}</label>
+        <input 
+          id="shortestPath"
+          type="radio"
+          name="searchOption"
+          checked={searchOption === SearchOptions.SHORTEST_PATH}
+          value={SearchOptions.SHORTEST_PATH}
+          onClick={handleInputChange} 
+          />
+        <label htmlFor="shortestPath">{SearchOptions.SHORTEST_PATH}</label>
         <p>Size: <strong>{size}</strong></p>
         <div>
           <p>Tool Tip</p>
@@ -24,7 +46,7 @@ const HomePage: React.FunctionComponent = () => {
           <p><strong>Control Click</strong> to create a 'blocking' block. Searches will not be able to navigate to a 'blocking' block</p>
         </div>
       </div>    
-      <Grid size={size}/>
+      <Grid size={size} searchOption={searchOption} />
     </div>
   );
 }

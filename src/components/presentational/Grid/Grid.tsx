@@ -1,18 +1,19 @@
 import React from "react";
 import styles from "./Grid.module.css";
+import { SearchOptions } from "../../pages/HomePage/HomePage";
 
 type GridProps = {
   size: number;
+  searchOption: string;
 }
 
 interface IVisited {
   [key: string]: boolean;
 }
 
-const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
+const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption }) => {
   const [selectedPosition, setSelectedPosition] = React.useState<number[]>([]);
   const [selectedDestination, setSelectedDestination] = React.useState<number[]>([]);
-  const [gridPath, setGridPath] = React.useState<any>({});
   const [grid, setGrid] = React.useState([]);
   const [blocked, setBlocked] = React.useState<any>({});
 
@@ -43,12 +44,11 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
     if (!isBlocked(adjacentVals.left) && adjacentVals.left[0] >= 0) {
         arr.push(adjacentVals.left);
     }
-    // console.log('arr is ', arr);
     return arr;
   }
 
   const breadthFirstTraversal = (vertex: number[]) => {
-    const path: any = {};
+    const path: any = [];
     const visited: IVisited = {} // needs to be size of vertices and initialised to false
     const unprocessed: number[][] = []; // Queue that contains unprocesseed vertices which needs to be checked
   
@@ -59,22 +59,14 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
         break;
       }
       if (!visited[u]) {
-        path[u] = true;
+        path.push(u);
         visited[u] = true;
         unprocessed.push(...getAdjacent(u));
       }
     }
-    console.log('path is ', path);
     return path;
   }
 
-  /*
-  {
-    [0,0]: [[0,0]],
-    [0,1]: [[0,0], [0,1]]
-    [1,0]: [[0,0], [1,0]],
-  }
-  */
   const shortestDistance = (vertex: number[]) => {
     const path: any = [];
     const visited: any = {} // needs to be size of vertices and initialised to false
@@ -102,7 +94,6 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
         }
       }
     }
-    console.log('path is ', path);
     return path;
   }
   
@@ -126,15 +117,20 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
   React.useEffect(() => {
     let result: any = {};
     if (selectedPosition.length > 0) {
-      // result = breadthFirstTraversal([0,0]);
-      result = shortestDistance([0,0]);
+      switch(searchOption) {
+        case SearchOptions.BREADTH_FIRST_SEARCH: result = breadthFirstTraversal([0, 0]);
+          break;
+        case SearchOptions.SHORTEST_PATH: result = shortestDistance([0, 0]);
+          break;
+        default: result = breadthFirstTraversal([0, 0])
+      }
+      
       let newResult: any = {}
       for(let i of result) {
         newResult[i] = true
       }
       result = newResult;
       // setGridPath(result);
-      setGridPath(newResult);
     }
     const createMatrix = () => {
       let tmpGrid: any = [];
@@ -163,7 +159,6 @@ const Grid: React.FunctionComponent<GridProps> = ({ size }) => {
 
   const handleSetSelectedPosition = (position: any) => (event: any) => {
     event.stopPropagation();
-    console.log('event is ', event, 'ctrl key', event.ctrlKey, ' meta key', event.metaKey);
     if (event.metaKey) {
       setBlocked({
         ...blocked,
