@@ -5,13 +5,14 @@ import { SearchOptions } from "../../pages/HomePage/HomePage";
 type GridProps = {
   size: number;
   searchOption: string;
+  getPathLength: Function;
 }
 
 interface IVisited {
   [key: string]: boolean;
 }
 
-const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption }) => {
+const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption, getPathLength }) => {
   const [selectedPosition, setSelectedPosition] = React.useState<number[]>([]);
   const [selectedDestination, setSelectedDestination] = React.useState<number[]>([]);
   const [grid, setGrid] = React.useState([]);
@@ -124,11 +125,13 @@ const Grid: React.FunctionComponent<GridProps> = ({ size, searchOption }) => {
           break;
         default: result = breadthFirstTraversal([0, 0])
       }
-      
+
       let newResult: any = {}
       for(let i of result) {
         newResult[i] = true
       }
+      console.log('path length is ', result.length);
+      getPathLength(result.length);
       result = newResult;
       // setGridPath(result);
     }

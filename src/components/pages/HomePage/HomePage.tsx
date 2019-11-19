@@ -10,11 +10,20 @@ export enum SearchOptions {
 
 const HomePage: React.FunctionComponent = () => {
   const [searchOption, setSearchOption] = React.useState(SearchOptions.BREADTH_FIRST_SEARCH);
-  const [size, setSize] = React.useState(10);
+  const [size, setSize] = React.useState(20);
+  const [pathLength, setPathLength] = React.useState(0);
+
+  const getPathLength = (length: number) => {
+    setPathLength(length);
+  }
 
   const handleInputChange = (event: any) => {
     setSearchOption(event.target.value);
   }
+
+  React.useEffect(() => {
+
+  }, [pathLength]);
 
   return (
     <div className={styles.homePageLockup}>
@@ -39,14 +48,15 @@ const HomePage: React.FunctionComponent = () => {
           onClick={handleInputChange} 
           />
         <label htmlFor="shortestPath">{SearchOptions.SHORTEST_PATH}</label>
-        <p>Size: <strong>{size}</strong></p>
+        <p>Grid Size: <strong>{size}</strong></p>
+        <p>Path Length: <strong>{pathLength}</strong></p>
         <div>
           <p>Tool Tip</p>
           <p><strong>Click</strong> to set a marker, this will be the destination endpoint for the initial one to search for</p>
           <p><strong>Control Click</strong> to create a 'blocking' block. Searches will not be able to navigate to a 'blocking' block</p>
         </div>
       </div>    
-      <Grid size={size} searchOption={searchOption} />
+      <Grid size={size} searchOption={searchOption} getPathLength={getPathLength} />
     </div>
   );
 }
