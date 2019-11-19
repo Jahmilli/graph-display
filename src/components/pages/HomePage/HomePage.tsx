@@ -10,7 +10,7 @@ export enum SearchOptions {
 
 const HomePage: React.FunctionComponent = () => {
   const [searchOption, setSearchOption] = React.useState(SearchOptions.BREADTH_FIRST_SEARCH);
-  const [size, setSize] = React.useState(20);
+  const [size, setSize] = React.useState(10);
   const [pathLength, setPathLength] = React.useState(0);
 
   const getPathLength = (length: number) => {
