@@ -1,8 +1,8 @@
 {
-  "name": "super-funtime",
+  "name": "graph-display",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://Jahmilli.github.io/super-funtime",
+  "homepage": "https://Jahmilli.github.io/graph-display",
   "dependencies": {
     "@types/jest": "24.0.23",
     "@types/node": "12.12.8",
